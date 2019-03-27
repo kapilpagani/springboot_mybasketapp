@@ -1,5 +1,7 @@
 package com.hpe.springboot.firstProject.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hpe.springboot.firstProject.dao.CustomerDao;
 import com.hpe.springboot.firstProject.entity.Customer;
@@ -38,6 +41,30 @@ public class CustomerController {
 		
 		cDao.save(customer);
 		return "redirect:/home";
+	}
+	
+	@RequestMapping(value="all-cusomer", method=RequestMethod.GET)
+	public String getCustomer(Model model){
+		System.out.println("all-cusomer");
+		
+		model.addAttribute("customers",cDao.findAll());
+		Iterable<Customer> customers = cDao.findAll();
+		for(Customer c : customers)
+			System.out.println(c.toString());
+		
+		return "customer";
+	}
+	
+	@RequestMapping(value="delete-customer")
+	public String deleteCustomer(Model model, @RequestParam Integer id){
+		
+		cDao.deleteById(id);
+		model.addAttribute("customers",cDao.findAll());
+//		Iterable<Customer> customers = cDao.findAll();
+//		for(Customer c : customers)
+//			System.out.println(c.toString());
+		
+		return "redirect:/all-cusomer";
 	}
 	
 }
